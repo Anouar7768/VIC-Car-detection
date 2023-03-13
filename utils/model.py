@@ -1,7 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
-from tqdm import tqdm
-from feature_extractor import get_hog_features_function
+
 
 
 def validate_model(model, X, y):
@@ -36,24 +35,4 @@ def train_model(model, X, y):
     return model
 
 
-def predict(model, img, window_size, sliding_step, confidence_threshold):
-    """
-    Predict and
-    :param model: model already trained
-    :param img: image where we want to detect cars
-    :param window_size: the window size of the sliding window
-    :param sliding_step: step at which we slide the window on the  image
-    :param confidence_threshold: confidence threshold at which we consider a prediction
-    :return:
-    """
-    h, w = img.shape[0], img.shape[1]
-    pred = []
-    for x in tqdm(range(0, h - window_size, sliding_step)):
-        for y in range(0, w - window_size, sliding_step):
-            sliding_img = img[x:x + window_size, y:y + window_size, :]
-            fd = get_hog_features_function(sliding_img, 8, 16, 1, False)
-            score = model.decision_function([fd])[0]
-            y_pred = model.predict([fd])
-            if y_pred == 1 and score >= confidence_threshold:
-                pred.append([x, y, x + window_size, y + window_size])
-    return pred
+
